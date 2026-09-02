@@ -43,13 +43,15 @@
 
 ## 📸 Application Showcase
 
-| 🏠 Home / Hero | 🍔 Food Products | 🛒 Shopping Cart |
-| :---: | :---: | :---: |
-| <img src="https://i.ibb.co/59cwY75/food-hero.png" width="280" alt="TOMATO Home"> | <img src="https://i.ibb.co/JnNQPyQ/food-products.png" width="280" alt="Food Products"> | <img src="https://i.ibb.co/t2LrQ8p/food-cart.png" width="280" alt="Shopping Cart"> |
+| 🏠 Home / Hero | 🍔 Food Products |
+| :---: | :---: |
+| <img src="https://i.ibb.co/59cwY75/food-hero.png" width="320" alt="TOMATO Home"> | <img src="https://i.ibb.co/JnNQPyQ/food-products.png" width="320" alt="Food Products"> |
 
-| 🔐 Authentication | ⚙️ Admin Panel | 💳 Production Workflow |
-| :---: | :---: | :---: |
-| <img src="https://i.ibb.co/s6PgwkZ/food-login.png" width="280" alt="Login"> | <img src="./docs/screenshots/admin-panel.png" width="280" alt="Admin Panel"> | <img src="./docs/screenshots/order-management.png" width="280" alt="Order Management"> |
+| 🛒 Shopping Cart | 🔐 Login |
+| :---: | :---: |
+| <img src="https://i.ibb.co/t2LrQ8p/food-cart.png" width="320" alt="Shopping Cart"> | <img src="https://i.ibb.co/s6PgwkZ/food-login.png" width="320" alt="Login"> |
+
+---
 
 ---
 
