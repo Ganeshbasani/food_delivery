@@ -45,14 +45,13 @@
 
 | 🏠 Home / Hero | 🍔 Food Products |
 | :---: | :---: |
-| <img src="https://i.ibb.co/59cwY75/food-hero.png" width="320" alt="TOMATO Home"> | <img src="https://i.ibb.co/JnNQPyQ/food-products.png" width="320" alt="Food Products"> |
+| <img src="https://i.ibb.co/59cwY75/food-hero.png" width="420" alt="TOMATO Home / Hero"> | <img src="https://i.ibb.co/JnNQPyQ/food-products.png" width="420" alt="TOMATO Food Products"> |
 
 | 🛒 Shopping Cart | 🔐 Login |
 | :---: | :---: |
-| <img src="https://i.ibb.co/t2LrQ8p/food-cart.png" width="320" alt="Shopping Cart"> | <img src="https://i.ibb.co/s6PgwkZ/food-login.png" width="320" alt="Login"> |
+| <img src="https://i.ibb.co/t2LrQ8p/food-cart.png" width="420" alt="TOMATO Shopping Cart"> | <img src="https://i.ibb.co/s6PgwkZ/food-login.png" width="420" alt="TOMATO Login"> |
 
 ---
-
 ---
 
 ## 🚀 Live Application
