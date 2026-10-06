@@ -1,13 +1,13 @@
 import express from "express";
 import authMiddleware from "../middleware/auth.js";
-import { listOrders, placeOrder, updateStatus, userOrders, verifyOrder } from "../controllers/orderController.js";
+import adminMiddleware from "../middleware/admin.js";
+import { placeOrder, paymentStatus, userOrders, listOrders, updateStatus } from "../controllers/orderController.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
-const orderRouter = express.Router();
-
-orderRouter.post("/place",authMiddleware,placeOrder);
-orderRouter.post("/verify",verifyOrder);
-orderRouter.post("/status",authMiddleware,updateStatus);
-orderRouter.post("/userorders",authMiddleware,userOrders);
-orderRouter.get("/list",authMiddleware,listOrders);
-
-export default orderRouter;
+const router = express.Router();
+router.post("/place", authMiddleware, asyncHandler(placeOrder));
+router.get("/payment/:orderId", authMiddleware, asyncHandler(paymentStatus));
+router.get("/user", authMiddleware, asyncHandler(userOrders));
+router.get("/list", authMiddleware, adminMiddleware, asyncHandler(listOrders));
+router.patch("/:orderId/status", authMiddleware, adminMiddleware, asyncHandler(updateStatus));
+export default router;

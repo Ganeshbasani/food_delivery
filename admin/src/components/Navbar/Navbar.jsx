@@ -1,32 +1,9 @@
-import React, { useContext } from "react";
-import "./Navbar.css";
-import { assets } from "../../assets/assets";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../../context/StoreContext";
-import { toast } from "react-toastify";
-import {useNavigate } from "react-router-dom";
-
+import "./Navbar.css";
 const Navbar = () => {
-  const navigate=useNavigate();
-  const {token, admin, setAdmin, setToken } = useContext(StoreContext);
-  const logout=()=>{
-    localStorage.removeItem("token");
-    localStorage.removeItem("admin");
-    setToken("");
-    setAdmin(false);
-    toast.success("Logout Successfully")
-    navigate("/");
-  }
-  return (
-    <div className="navbar">
-      <img className="logo" src={assets.logo} alt="" />
-      {token && admin ? (
-        <p className="login-conditon" onClick={logout}>Logout</p>
-      ) : (
-        <p className="login-conditon" onClick={()=>navigate("/")}>Login</p>
-      )}
-      <img className="profile" src={assets.profile_image} alt="" />
-    </div>
-  );
+  const { token, admin, logout } = useContext(StoreContext); const navigate=useNavigate();
+  return <header className="navbar"><div className="admin-brand" onClick={()=>navigate("/")}><img src="/brand/biteflow-mark.svg" alt=""/><div><strong>BiteFlow</strong><small>Operations Console</small></div></div>{token&&admin?<button className="logout-button" onClick={()=>{logout();navigate("/");}}>Sign out</button>:<span className="console-status">Secure admin access</span>}</header>;
 };
-
 export default Navbar;

@@ -1,77 +1,47 @@
 import userModel from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import validator from "validator";
+import { assert } from "../utils/httpError.js";
+import { isEmail, isStrongPassword, normalizeEmail, cleanText } from "../utils/validation.js";
 
-// login user
+const createToken = (user) =>
+  jwt.sign(
+    { id: user._id.toString(), role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRES_IN || "2h" }
+  );
 
-const loginUser = async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await userModel.findOne({ email });
-    if (!user) {
-      return res.json({ success: false, message: "User Doesn't exist" });
-    }
-    const isMatch =await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.json({ success: false, message: "Invalid Credentials" });
-    }
-    const role=user.role;
-    const token = createToken(user._id);
-    res.json({ success: true, token,role });
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: "Error" });
-  }
+export const loginUser = async (req, res) => {
+  const email = normalizeEmail(req.body.email);
+  const password = req.body.password;
+  assert(isEmail(email), 422, "INVALID_EMAIL", "Please enter a valid email address.");
+  assert(typeof password === "string" && password.length > 0, 422, "INVALID_PASSWORD", "Password is required.");
+
+  const user = await userModel.findOne({ email }).select("+password");
+  assert(user, 401, "INVALID_CREDENTIALS", "Invalid email or password.");
+  const match = await bcrypt.compare(password, user.password);
+  assert(match, 401, "INVALID_CREDENTIALS", "Invalid email or password.");
+
+  const token = createToken(user);
+  res.json({ success: true, token, role: user.role, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
 };
 
-// Create token
+export const registerUser = async (req, res) => {
+  const name = cleanText(req.body.name, 80);
+  const email = normalizeEmail(req.body.email);
+  const password = req.body.password;
 
-const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET);
+  assert(name.length >= 2, 422, "INVALID_NAME", "Name must contain at least 2 characters.");
+  assert(isEmail(email), 422, "INVALID_EMAIL", "Please enter a valid email address.");
+  assert(isStrongPassword(password), 422, "WEAK_PASSWORD", "Password must be at least 8 characters and include a letter and a number.");
+
+  const exists = await userModel.exists({ email });
+  assert(!exists, 409, "USER_EXISTS", "An account already exists for this email.");
+
+  const saltRounds = Number(process.env.SALT || 12);
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  const user = await userModel.create({ name, email, password: hashedPassword });
+  const token = createToken(user);
+
+  res.status(201).json({ success: true, token, role: user.role, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
 };
-
-// register user
-
-const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
-  try {
-    // checking user is already exist
-    const exists = await userModel.findOne({ email });
-    if (exists) {
-      return res.json({ success: false, message: "User already exists" });
-    }
-
-    // validating email format and strong password
-    if (!validator.isEmail(email)) {
-      return res.json({ success: false, message: "Please enter valid email" });
-    }
-    if (password.length < 8) {
-      return res.json({
-        success: false,
-        message: "Please enter strong password",
-      });
-    }
-
-    // hashing user password
-
-    const salt = await bcrypt.genSalt(Number(process.env.SALT));
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const newUser = new userModel({
-      name: name,
-      email: email,
-      password: hashedPassword,
-    });
-
-    const user = await newUser.save();
-    const role=user.role;
-    const token = createToken(user._id);
-    res.json({ success: true, token, role});
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: "Error" });
-  }
-};
-
-export { loginUser, registerUser };

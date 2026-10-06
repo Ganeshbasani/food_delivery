@@ -1,51 +1,38 @@
+import mongoose from "mongoose";
 import userModel from "../models/userModel.js";
+import foodModel from "../models/foodModel.js";
+import { assert } from "../utils/httpError.js";
 
-// add items to user cart
-const addToCart = async (req, res) => {
-  try {
-    let userData = await userModel.findById(req.body.userId);
-    let cartData = await userData.cartData;
-    if (!cartData[req.body.itemId]) {
-      cartData[req.body.itemId] = 1;
-    } else {
-      cartData[req.body.itemId] += 1;
-    }
-    await userModel.findByIdAndUpdate(req.body.userId, { cartData });
-    res.json({ success: true, message: "Added to Cart" });
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: "Error" });
-  }
+const assertObjectId = (id) => assert(mongoose.isValidObjectId(id), 422, "INVALID_ID", "Invalid product identifier.");
+
+export const addToCart = async (req, res) => {
+  const itemId = String(req.body.itemId || "");
+  assertObjectId(itemId);
+  assert(await foodModel.exists({ _id: itemId, active: true }), 404, "FOOD_NOT_FOUND", "Product is not available.");
+  const user = await userModel.findById(req.user.id);
+  assert(user, 404, "USER_NOT_FOUND", "Account not found.");
+  const quantity = Number(user.cartData?.[itemId] || 0) + 1;
+  user.cartData[itemId] = quantity;
+  user.markModified("cartData");
+  await user.save();
+  res.json({ success: true, message: "Added to cart.", cartData: user.cartData });
 };
 
-// remove from cart
-const removeFromCart = async (req, res) => {
-  try {
-    let userData = await userModel.findById(req.body.userId);
-    let cartData = await userData.cartData;
-    if (cartData[req.body.itemId] > 1) {
-      cartData[req.body.itemId] -= 1;
-    } else {
-      delete cartData[req.body.itemId];
-    }
-    await userModel.findByIdAndUpdate(req.body.userId, { cartData });
-    res.json({ success: true, message: "Removed from Cart" });
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: "Error" });
-  }
+export const removeFromCart = async (req, res) => {
+  const itemId = String(req.body.itemId || "");
+  assertObjectId(itemId);
+  const user = await userModel.findById(req.user.id);
+  assert(user, 404, "USER_NOT_FOUND", "Account not found.");
+  const current = Number(user.cartData?.[itemId] || 0);
+  if (current <= 1) delete user.cartData[itemId];
+  else user.cartData[itemId] = current - 1;
+  user.markModified("cartData");
+  await user.save();
+  res.json({ success: true, message: "Cart updated.", cartData: user.cartData });
 };
 
-// fetch user cart data
-const getCart = async (req, res) => {
-  try {
-    let userData = await userModel.findById(req.body.userId);
-    let cartData = await userData.cartData;
-    res.json({ success: true, cartData: cartData });
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: "Error" });
-  }
+export const getCart = async (req, res) => {
+  const user = await userModel.findById(req.user.id).select("cartData");
+  assert(user, 404, "USER_NOT_FOUND", "Account not found.");
+  res.json({ success: true, cartData: user.cartData || {} });
 };
-
-export { addToCart, removeFromCart, getCart };

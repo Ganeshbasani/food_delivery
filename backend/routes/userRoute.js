@@ -1,9 +1,10 @@
 import express from "express";
 import { loginUser, registerUser } from "../controllers/userController.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { rateLimit } from "../middleware/security.js";
 
-const userRouter = express.Router();
-
-userRouter.post("/register", registerUser);
-userRouter.post("/login", loginUser);
-
-export default userRouter;
+const router = express.Router();
+const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 15, keyPrefix: "auth" });
+router.post("/register", authLimiter, asyncHandler(registerUser));
+router.post("/login", authLimiter, asyncHandler(loginUser));
+export default router;

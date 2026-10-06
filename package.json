@@ -1,0 +1,14 @@
+{
+  "name": "biteflow-platform",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Scalable food commerce platform with a customer web app, operations console and production-minded REST API.",
+  "scripts": {
+    "api:start": "npm --prefix backend start",
+    "api:test": "npm --prefix backend test",
+    "web:dev": "npm --prefix frontend run dev",
+    "web:build": "npm --prefix frontend run build",
+    "ops:dev": "npm --prefix admin run dev",
+    "ops:build": "npm --prefix admin run build"
+  }
+}

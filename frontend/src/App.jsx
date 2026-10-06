@@ -1,35 +1,14 @@
-import React, { useState } from "react";
-import Navbar from "./components/Navbar/Navbar";
 import { Route, Routes } from "react-router-dom";
-import Home from "./pages/Home/Home";
-import Cart from "./pages/Cart/Cart";
-import PlaceOrder from "./pages/PlaceOrder/PlaceOrder";
-import Footer from "./components/Footer/Footer";
-import LoginPopup from "./components/LoginPopup/LoginPopup";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Verify from "./pages/Verify/Verify";
-import MyOrders from "./pages/MyOrders/MyOrders";
+import Navbar from "./components/Navbar/Navbar";
+import AuthModal from "./components/AuthModal/AuthModal";
+import Footer from "./components/Footer/Footer";
+import Home from "./pages/Home/Home";
+import CartPage from "./pages/CartPage/CartPage";
+import PlaceOrder from "./pages/PlaceOrder/PlaceOrder";
+import OrdersPage from "./pages/OrdersPage/OrdersPage";
+import PaymentStatus from "./pages/PaymentStatus/PaymentStatus";
 
-const App = () => {
-  const [showLogin, setShowLogin] = useState(false);
-  return (
-    <>
-      {showLogin ? <LoginPopup setShowLogin={setShowLogin} /> : <></>}
-      <div className="app">
-        <ToastContainer />
-        <Navbar setShowLogin={setShowLogin} />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/order" element={<PlaceOrder />} />
-          <Route path="/verify" element={<Verify />} />
-          <Route path="/myorders" element={<MyOrders />} />
-        </Routes>
-      </div>
-      <Footer />
-    </>
-  );
-};
-
+const App = () => <div className="app"><Navbar/><ToastContainer position="top-right" autoClose={2500}/><Routes><Route path="/" element={<Home/>}/><Route path="/cart" element={<CartPage/>}/><Route path="/checkout" element={<PlaceOrder/>}/><Route path="/orders" element={<OrdersPage/>}/><Route path="/payment/:orderId" element={<PaymentStatus/>}/></Routes><AuthModal/><Footer/></div>;
 export default App;

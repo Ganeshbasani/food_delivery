@@ -1,15 +1,1 @@
-.navbar{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 4%;
-}
-.navbar .logo{
-    width: max(10%,80px);
-}
-.navbar .profile{
-    width: 40px;
-}
-.login-conditon{
-    font-size: 20px;
-}
+.navbar{height:76px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;background:#0f172a;color:#fff}.admin-brand{display:flex;align-items:center;gap:11px;cursor:pointer}.admin-brand img{width:36px}.admin-brand div{display:flex;flex-direction:column}.admin-brand strong{font-size:1.15rem;letter-spacing:-.03em}.admin-brand small{font-size:.7rem;color:#94a3b8}.logout-button{border:1px solid rgba(255,255,255,.16);background:transparent;color:#fff;padding:9px 13px;border-radius:10px;cursor:pointer;font-weight:700}.console-status{color:#94a3b8;font-size:.82rem}
